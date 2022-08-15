@@ -3,6 +3,9 @@ import { LEVELS } from '../../models/levels.enum'
 import { Task } from '../../models/task.class'
 import TaskComponent from '../pure/task';
 
+//Importamos la hoja de estilos task.scss
+
+import '../../styles/task.scss'
 
 const TaskListComponent = () => {
 
@@ -10,13 +13,15 @@ const TaskListComponent = () => {
 
     //Estado del componente 
     const [tasks, setTasks] = useState([defaultTask]);
+    const [loading, setLoading] = useState(true);
 
     // Control del ciclo de vida del componente 
     useEffect(() => {
         console.log('Modificacion de Tareas')
-      return () => {
+        setLoading(false);
+        return () => {
         console.log('componente Tasklist va a desaparecer')
-      };
+        };
     }, [tasks])
 
 
