@@ -31,8 +31,8 @@ function App() {
       {/*<GreetingStyled name = "Mario"></GreetingStyled>*/}
       {/*</header>*/}
       {/*Gestion de eventos*/}
-      <Father></Father>
-      {/*<TaskListComponent></TaskListComponent>*/}
+      {/*<Father></Father>*/}
+      <TaskListComponent></TaskListComponent>
 
     </div>
   );
