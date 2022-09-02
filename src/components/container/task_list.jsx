@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { LEVELS } from '../../models/levels.enum'
 import { Task } from '../../models/task.class'
 import TaskComponent from '../pure/task';
@@ -10,31 +10,34 @@ import TaskForm from '../pure/forms/taskForm';
 
 const TaskListComponent = () => {
 
-    const defaultTask1 = new Task('Example1', 'Description1', true , LEVELS.NORMAL);
-    const defaultTask2 = new Task('Example2', 'Description2', false , LEVELS.URGENT);
-    const defaultTask3 = new Task('Example3', 'Description3', true , LEVELS.BLOCKING);
+    const defaultTask1 = new Task('Example1', 'Description1', true, LEVELS.NORMAL);
+    const defaultTask2 = new Task('Example2', 'Description2', false, LEVELS.URGENT);
+    const defaultTask3 = new Task('Example3', 'Description3', true, LEVELS.BLOCKING);
 
 
 
     //Estado del componente 
-    const [tasks, setTasks] = useState([defaultTask1,defaultTask2,defaultTask3]);
+    const [tasks, setTasks] = useState([defaultTask1, defaultTask2, defaultTask3]);
     const [loading, setLoading] = useState(true);
 
     // Control del ciclo de vida del componente 
     useEffect(() => {
         console.log('Modificacion de Tareas')
-        setLoading(false);
+        setTimeout(() => {
+            setLoading(false)
+        }, 2000)
+        //setLoading(false);
         return () => {
-        console.log('componente Tasklist va a desaparecer')
+            console.log('componente Tasklist va a desaparecer')
         };
     }, [tasks])
 
 
-    function CompleteTask(task){
+    function CompleteTask(task) {
         console.log('Complete this Task:', task);
         const index = tasks.indexOf(task);
         const tempTasks = [...tasks];
-        tempTasks[index].completed = ! tempTasks[index].completed;
+        tempTasks[index].completed = !tempTasks[index].completed;
         // We update the state of the component and it will update
         // the iteration to order to show the task update
 
@@ -42,21 +45,77 @@ const TaskListComponent = () => {
     }
 
 
-    function deleteTask(task){
+    function deleteTask(task) {
         console.log('Delete this Task:', task);
         const index = tasks.indexOf(task);
         const tempTasks = [...tasks];
-        tempTasks.splice(index,1)
+        tempTasks.splice(index, 1)
         setTasks(tempTasks)
     }
 
-    function addTask(task){
+    function addTask(task) {
         console.log('Delete this Task:', task);
-        const index = tasks.indexOf(task);
         const tempTasks = [...tasks];
         tempTasks.push(task);
         setTasks(tempTasks)
     }
+
+    const Table = () => {
+        return (
+            <table>
+                <thead>
+                    <tr>
+                        <th scope='col'>Title</th>
+                        <th scope='col'>Description</th>
+                        <th scope='col'>Priority</th>
+                        <th scope='col'>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {/*ToDo: Iterar sobre una lista de tareas*/}
+
+                    {tasks.map((task, index) => {
+                        return (
+                            <TaskComponent
+                                key={index}
+                                task={task}
+                                complete={CompleteTask}
+                                remove={deleteTask}  >
+
+                            </TaskComponent>
+                        )
+                    })}
+
+                </tbody>
+
+            </table>
+        );
+
+    }
+
+    let tasksTable;   
+
+
+    if (tasks.length > 0) {
+        tasksTable =  <Table> </Table>
+    }
+    else{
+        tasksTable = (
+        <div> 
+        <h3>There are no tasks to show</h3>
+        <h4>Please, Create One</h4>
+        </div>
+        )
+    }
+
+    const LoadingStyle = {
+        color: 'grey',
+        fontSize: '30px',
+        fontWeight: 'bold'
+
+    }
+
 
     return (
         <div>
@@ -64,47 +123,20 @@ const TaskListComponent = () => {
                 <div className='card'>
                     <div className='card-header p-3'>
                         <h5>
-                        Your Tasks:
+                            Your Tasks:
                         </h5>
                     </div>
                     {/*Card Body(Content)*/}
-                    <div className='card-body' data-mdb-perfect-scrollbar='true' style = { {position:'relative', height:'400px'} }>
-                        <table>
-                        <thead>
-                            <tr>
-                                <th scope='col'>Title</th>
-                                <th scope='col'>Description</th>
-                                <th scope='col'>Priority</th>
-                                <th scope='col'>Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {/*ToDo: Iterar sobre una lista de tareas*/}
-
-                        {tasks.map((task,index) => {
-                            return(
-                                <TaskComponent 
-                                key={index}
-                                task={task}
-                                complete = {CompleteTask}
-                                remove = {deleteTask}  >
-                            
-                                </TaskComponent>
-                            )
-                        })}
-                            
-                        </tbody>
-
-                        </table>
+                    <div className='card-body' data-mdb-perfect-scrollbar='true' style={{ position: 'relative', height: '400px' }}>
+                        { loading ? (<p style={LoadingStyle}>Loading Tasks...</p>) : tasksTable }
                     </div>
 
                 </div>
-                    
+
             </div>
             {/*TODO Aplicar un For/map para renderizar una lista */}
-        {/*<TaskComponent task={defaultTask}></TaskComponent>*/}
-        <TaskForm add = {addTask}></TaskForm>
+            {/*<TaskComponent task={defaultTask}></TaskComponent>*/}
+            <TaskForm add={addTask} length = {tasks.length}></TaskForm>
         </div>
     );
 }
